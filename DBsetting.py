@@ -33,7 +33,7 @@ def make_food_table():
     name = []
     temp = []
     n = 1
-    SQL_food = 'INSERT INTO food (id,name, url) VALUES (%s , %s , %s)'
+    SQL_food = 'INSERT INTO food (id,name, url, img_url) VALUES (%s , %s , %s, %s)'
     SQL_foodingredient = 'INSERT INTO foodingredient (foodid,ingredientid) VALUES ( %s , %s )'
     curs.execute('SELECT * FROM ingredient')
     result = curs.fetchall()
@@ -44,7 +44,8 @@ def make_food_table():
 
     for url in list:
         name_url = crawling.spider_name(url)
-        curs.execute(SQL_food, ( n , name_url , url))                            #food테이블에 id, name, url 넣기
+        img = crawling.spider_img(url)
+        curs.execute(SQL_food, ( n , name_url , url, img))                            #food테이블에 id, name, url 넣기
         conn.commit()
         temp = crawling.spider_ingredients(url)
         for ingre in temp:                                                  #foodingredient 테이블 만들기
