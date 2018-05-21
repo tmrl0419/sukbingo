@@ -8,6 +8,7 @@
 # Copyright:   (c) them0 2018
 # Licence:     <your licence>
 #-------------------------------------------------------------------------------
+
 import crawling
 import pymysql
 from operator import eq
@@ -56,56 +57,83 @@ def make_food_table():
                     conn.commit()
         n = n+1
 
-def user_regist(user,password):
-    SQL_regist = 'INSERT INTO user (user,password) VALUES (%s,%s)'
-    curs.execute(SQL_regist, (user, password))
-    conn.commit()
 
-'''
-def insert_inventory(userid,ingredientid):
-    SQL_useringredient = 'SELECT * FROM useringredient WHERE user = %s'
-    curs.execute(SQL_useringredient, (user))
-    result = cursor.fetchall()
-    #print(result)
+def user_regist(user,password,name):
+
+    SQL_regist = 'INSERT INTO user (user,password,name) VALUES (%s,%s,%s)'
+    curs.execute(SQL_regist, (user, password,name))
+    conn.commit()
+    return True
+
+
+def user_login(user,password):
+    SQL_useringredinet = 'SELECT * FROM user WHERE user = %s'
+    curs.execute(SQL_useringredinet, (user))
+    n = curs.fetchone()
+    if password == n[1]:
+        return n[2]
+    else:
+        return -100
+
+
+def insert_inventory( userid, ingredientid ):
+    SQL_useringredient = 'INSERT INTO useringredient ( userid,ingredientid ) VALUES ( %s, %s )'
+    curs.execute(SQL_useringredient, (userid, ingredientid) )
+    conn.commit()
+    return True
 
 
 def delete_inventory(userid,ingredientid):
-    SQL_useringredient = 'SELECT * FROM useringredient WHERE user = %s'
-    curs.execute(SQL_useringredient, (user))
-    result = cursor.fetchall()
-    #print(result)
-'''
+    SQL_useringredient = 'DELETE FROM useringredient WHERE userid = %s and ingredientid = %s'
+    curs.execute(SQL_useringredient, (userid,ingredientid))
+    conn.commit()
+    return True
 
 def search(user):
+
     result = []
     useringredient =[]
-    SQL_useringredinet = 'SELECT * FROM useringredient WHERE userid = %s'
+
+    SQL_useringredinet = 'SELECT * FROM useringredient WHERE userid = %s'       #DB문 선언
     SQL_useringredinet2 = 'SELECT * FROM foodingredient WHERE foodid = %s'
-    curs.execute(SQL_useringredinet, (user))
+
+    curs.execute( SQL_useringredinet, (user))
     userresult = curs.fetchall()                #가진 요리 재료만 리스트로
     for i in userresult:
-        useringredient.append(i[1])
-    print(useringredient)
+        useringredient.append(i[1])             # user의 재료 useringredient list만들기.
+
     curs.execute('select count(*) from food')   #갯수 수하기
     n = curs.fetchone()
     k = n[0]
-    print(k)
-    for i in range(0,k):
+
+    for i in range(1,k+1):
+
         ingredient = []
-        curs.execute(SQL_useringredinet2, (i))
-        foodresult = curs.fetchall()
-        for i in foodresult:
-            ingredient.append(i[1])
-        useringredient.sort()
-        ingredient.sort()
-        ingredient = no_continuous(ingredient)
-        if(eq(useringredient,ingredient)):
-            result.append(i[0])                    #요리 id 추가 하기.
+        temp = []
+
+        curs.execute(SQL_useringredinet2, i)
+        ingredient = curs.fetchall()
+
+        for item in ingredient:
+            temp.append(item[1])
+
+        ingredient = no_continuous(temp)
+        useringredient = no_continuous(useringredient)
+        newlist = [ item for item in ingredient if item in useringredient]
+        if(eq(newlist,ingredient)):
+            result.append(i)                    #요리 id 추가 하기.
     print(result)
     return result
 
 
-
-
 if __name__ == '__main__':
-    make_food_table()
+    #make_food_table()
+    #user_regist('432','432432','minseokkim')
+    #print(user_login('123','123123'))
+    #insert_inventory(1,14)
+    #insert_inventory(1,15)
+    #insert_inventory(1,11)
+    delete_inventory(1,11)
+    delete_inventory(1,14)
+    delete_inventory(1,15)
+    search(1)
