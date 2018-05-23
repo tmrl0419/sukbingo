@@ -41,24 +41,18 @@ def login():
     user = request.form['user']
     password = request.form['password']
     userid = DBsetting.user_login(user,password)
-    if userid >= 0:
-        jsonresult = {
-            'result' : True,
-            'id' : userid
-        }
-    else:
-        jsonresult = {
-            'result' : False,
-            'id' : userid
-        }
+    jsonresult = {
+        'id' : userid
+    }
     jsonString = json.dumps(jsonresult)
+    print (jsonString)
     return jsonString
 
 
 @app.route("/search", methods = ['GET'])    # 검색
 def search():
-    userid = request.form['user']
-    result = DBsetting.search[userid]
+    userid = request.args.get('user')
+    result = DBsetting.search(userid)
     jsonresult = {
         'result' : result
     }
@@ -90,5 +84,6 @@ def delete_ingredient():
 
 if __name__ =="__main__":
     app.run(host='0.0.0.0',port = 8000,debug='True')
+
 #각 페이지마다 행동들 정해주기,
 #맨 처음 실행될때 initialize -> make_food_table, make_Relation_Food_ingredient
