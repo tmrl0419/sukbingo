@@ -36,6 +36,7 @@ def regist():
     jsonstring = json.dumps(jsonresult)
     return jsonstring
 
+
 @app.route("/login", methods = ['POST'])    # 로그인.
 def login():
     user = request.form['user']
@@ -49,16 +50,6 @@ def login():
     return jsonString
 
 
-@app.route("/search", methods = ['GET'])    # 검색
-def search():
-    userid = request.args.get('user')
-    result = DBsetting.search(userid)
-    jsonresult = {
-        'result' : result
-    }
-    jsonstring = json.dumps(jsonresult)
-    return jsonstring
-
 @app.route("/add-ingredient", methods = ['PUT'])    # 재료 추가
 def add_ingredient():
     userid = request.form['user']
@@ -70,11 +61,45 @@ def add_ingredient():
     jsonstring = json.dumps(jsonresult)
     return jsonstring
 
+
 @app.route("/delete-ingredient", methods = ['DELETE'])    # 재료 추가
 def delete_ingredient():
     userid = request.form['user']
     ingredientid = request.form['ingredientid']
     result = DBsetting.delete_inventory(userid,ingredientid)
+    jsonresult = {
+        'result' : result
+    }
+    jsonstring = json.dumps(jsonresult)
+    return jsonstring
+
+
+@app.route("/get-userinfo", methods = ['POST'])    # 재료 추가
+def get_userinfo():
+    user = request.form['user']
+    result = DBsetting.get_userInfo(user)
+    jsonresult = {
+        'result' : result
+    }
+    jsonstring = json.dumps(jsonresult)
+    return jsonstring
+
+
+@app.route("/get-foodinfo", methods = ['POST'])    # 재료 추가
+def get_foodinfo():
+    food = request.form['food']
+    result = DBsetting.get_foodInfo(food)
+    jsonresult = {
+        'result' : result
+    }
+    jsonstring = json.dumps(jsonresult)
+    return jsonstring
+
+
+@app.route("/search", methods = ['GET'])    # 검색
+def search():
+    userid = request.args.get('user')
+    result = DBsetting.search(userid)
     jsonresult = {
         'result' : result
     }
