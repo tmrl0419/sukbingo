@@ -16,64 +16,111 @@ from operator import eq
 conn = pymysql.connect(host='localhost', user = 'root', password = '456123', db='test', charset='utf8')
 curs = conn.cursor();
 
-def no_continuous(s):
-    # 함수를 완성하세요
-    r=[]    #정답을 저장할 빈공간의 list 생성
-    for i in range(len(s)): #i를 번지수로 돌릴것이며 범위는 s의 갯수만큼
-        if i == 0:          #초기값은 무조건 0이기 때문에 중복될수가 없음
-            r.append(s[i])  #0은 바로 추가시켜줍니다
-        elif s[i] != s[i-1]:#현재 주소와 그전의 주소가 같지 않을경우
-            r.append(s[i])  #지금 값을 추가해줍니다
+def no_continuous(s):                                                                               # list 중복 없애는 함수.
+    r = []
+    for i in range(len(s)):
+        if i == 0:
+            r.append(s[i])
+        elif s[i] != s[i-1]:
+            r.append(s[i])
     return r
 
-def make_food_table():
-    curs.execute('DELETE FROM food')
+def make_food_table():                                                                              # crawling 으로 디비에 자료 넣는 함수.
+    curs.execute('DELETE FROM food')                                                                 # 자료넣기전에 이전 값 초기화.
     curs.execute('DELETE FROM foodingredient')
-    f = open('url.txt','r')
+    f = open('url.txt','r')                                                                         # url.txt에서 url값들을 불러옴.
     list = []
     name = []
     temp = []
     n = 1
-    SQL_food = 'INSERT INTO food (id,name, url, img_url) VALUES (%s , %s , %s, %s)'
-    SQL_foodingredient = 'INSERT INTO foodingredient (foodid,ingredientid) VALUES ( %s , %s )'
+    SQL_food = 'INSERT INTO food (id,name, url, img_url) VALUES (%s , %s , %s, %s)'                 # food 정보 insert sql 문.
+    SQL_foodingredient = 'INSERT INTO foodingredient (foodid,ingredientid) VALUES ( %s , %s )'      # food와 ingredient 관계 table.
     curs.execute('SELECT * FROM ingredient')
     result = curs.fetchall()
 
-    for line in f:
+    for line in f:                                                                                  # usl을 list에 하나씩 넣기
         list.append((line.strip('\n')))
     f.close()
 
     for url in list:
-        name_url = crawling.spider_name(url)
-        img = crawling.spider_img(url)
-        curs.execute(SQL_food, ( n , name_url , url, img))                            #food테이블에 id, name, url 넣기
+        name_url = crawling.spider_name(url)                                                        # 이름 crawling
+        img = crawling.spider_img(url)                                                              # 이미지 crawling
+        curs.execute(SQL_food, ( n , name_url , url, img))                                          #food테이블에 id, name, url , img 넣기.
         conn.commit()
-        temp = crawling.spider_ingredients(url)
-        for ingre in temp:                                                  #foodingredient 테이블 만들기
+        temp = crawling.spider_ingredients(url)                                                     # 재료 crawling
+        for ingre in temp:                                                                          #foodingredient 테이블 만들기.
             for row_data in result:
-                if( eq( row_data[1] , ingre ) ):
-                    #print( n, row_data[0])
+                if( eq( row_data[1] , ingre ) ):                                                    # 크롤링한 재료와 ingredient에 있는 재료와 매칭이 된다면 추가.
                     curs.execute(SQL_foodingredient, ( n , row_data[0]))
                     conn.commit()
         n = n+1
 
 
 def user_regist(user,password,name):
-
-    SQL_regist = 'INSERT INTO user (user,password,name) VALUES (%s,%s,%s)'
-    curs.execute(SQL_regist, (user, password,name))
-    conn.commit()
-    return True
+    SQL_chk = 'SELECT * FROM user WHERE user = %s'
+    curs.execute(SQL_chk, (user))
+    n = curs.fetchone()
+    if (n==None):
+        SQL_regist = 'INSERT INTO user (user,password,name) VALUES (%s,%s,%s)'
+        curs.execute(SQL_regist, (user, password,name))
+        conn.commit()
+        return True
+    return False
 
 
 def user_login(user,password):
-    SQL_useringredinet = 'SELECT * FROM user WHERE user = %s'
-    curs.execute(SQL_useringredinet, (user))
+    SQL_user = 'SELECT * FROM user WHERE user = %s'
+    curs.execute(SQL_user, (user))
     n = curs.fetchone()
-    if password == n[1]:
+    if( n == None):                                                                                 # 없는 id라면 return -200
+        return -200
+    elif password == n[1]:                                                                          # 일치한다면 return id값
         return n[2]
-    else:
+    else:                                                                                           # 비밀번호가 다르다면 return -100
         return -100
+
+def get_userInfo(userid):
+    SQL_user = 'SELECT * FROM user WHERE user = %s'
+    curs.execute(SQL_user, (userid))
+    result = curs.fetchone()
+    return result
+
+def show_menu():
+    SQL_menu = 'SELECT name FROM food'
+    curs.execute(SQL_menu)
+    menu = curs.fetchall()
+    result = []
+    for food in menu:
+        result.append(food[0])
+    print(result)
+
+def show_ingredientAll():
+    SQL_ingredient = 'SELECT name FROM ingredient'
+    curs.execute(SQL_ingredient)
+    ingredient = curs.fetchall()
+    result = []
+    for food in ingredient:
+        result.append(food[0])
+    print(result)
+
+def get_foodInfo(foodid):
+    SQL_food = 'SELECT * FROM food WHERE name = %s'
+    SQL_foodingredient = 'SELECT ingredientid FROM foodingredient WHERE foodid = %s'
+    SQL_ingredient = 'SELECT name FROM ingredient WHERE id = %s'
+    curs.execute(SQL_food, (foodid))
+    foodinfo = curs.fetchone()
+    curs.execute(SQL_foodingredient, (foodinfo[0]))
+    list_ingreidnet = curs.fetchall()
+    result = []
+    for info in foodinfo:
+        result.append(info)
+    for i in list_ingreidnet:
+        curs.execute(SQL_ingredient, (i))
+        list = curs.fetchone()
+        result.append(list[0])
+    return result
+
+
 
 
 def insert_inventory( userid, ingredientid ):
@@ -81,6 +128,7 @@ def insert_inventory( userid, ingredientid ):
     curs.execute(SQL_useringredient, (userid, ingredientid) )
     conn.commit()
     return True
+
 
 
 def delete_inventory(userid,ingredientid):
@@ -122,27 +170,13 @@ def search(user):
         newlist = [ item for item in ingredient if item in useringredient]
         if(eq(newlist,ingredient)):
             result.append(i)                    #요리 id 추가 하기.
-    print(result)
     return result
 
 
 if __name__ == '__main__':
     #make_food_table()
-    #user_regist('432','432432','minseokkim')
-    #print(user_login('123','123123'))
-    insert_inventory(1,14)
-    insert_inventory(1,15)
-    insert_inventory(1,11)
-    insert_inventory(1,29)
-    insert_inventory(1,28)
-    insert_inventory(1,27)
-    insert_inventory(1,26)
-    insert_inventory(1,25)
-    insert_inventory(1,24)
-    insert_inventory(1,23)
-    insert_inventory(1,22)
-    insert_inventory(1,21)
-    #delete_inventory(1,11)
-    #delete_inventory(1,14)
-    #delete_inventory(1,15)
-    #search(1)
+    #print(user_regist('98712','123123','asdf'))
+    #print(get_userInfo(123))
+    #print(get_foodInfo('오므라이스'))
+    #show_menu()
+    show_ingredientAll()
