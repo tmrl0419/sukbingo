@@ -26,6 +26,7 @@ def main():
 
 @app.route("/regist", methods = ['POST'])    # 회원가입.
 def regist():
+    print("asda")
     user = request.form['user']                     # 아이디 중복 체크 넣어야함
     password = request.form['password']
     name = request.form['name']
@@ -35,6 +36,7 @@ def regist():
     }
     jsonstring = json.dumps(jsonresult)
     return jsonstring
+
 
 
 @app.route("/login", methods = ['POST'])    # 로그인.
@@ -62,7 +64,7 @@ def add_ingredient():
     return jsonstring
 
 
-@app.route("/delete-ingredient", methods = ['DELETE'])    # 재료 추가
+@app.route("/delete-ingredient", methods = ['DELETE'])    # 재료 삭제
 def delete_ingredient():
     userid = request.form['user']
     ingredientid = request.form['ingredientid']
@@ -74,7 +76,7 @@ def delete_ingredient():
     return jsonstring
 
 
-@app.route("/get-userinfo", methods = ['POST'])    # 재료 추가
+@app.route("/get-userinfo", methods = ['POST'])
 def get_userinfo():
     user = request.form['user']
     result = DBsetting.get_userInfo(user)
@@ -85,7 +87,7 @@ def get_userinfo():
     return jsonstring
 
 
-@app.route("/get-foodinfo", methods = ['POST'])    # 재료 추가
+@app.route("/get-foodinfo", methods = ['POST'])
 def get_foodinfo():
     food = request.form['food']
     result = DBsetting.get_foodInfo(food)
@@ -105,7 +107,6 @@ def search():
     }
     jsonstring = json.dumps(jsonresult)
     return jsonstring
-
 
 if __name__ =="__main__":
     app.run(host='0.0.0.0',port = 8000,debug='True')
