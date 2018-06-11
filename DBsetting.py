@@ -47,7 +47,7 @@ def make_food_table():                                                          
         img = crawling.spider_img(url)                                                              # 이미지 crawling
         curs.execute(SQL_food, ( n , name_url , url, img))                                          #food테이블에 id, name, url , img 넣기.
         conn.commit()
-        temp = crawling.spider_ingredients(url)                                                     # 재료 crawling
+        temp = crawling.spider_ingredients(url)                                                                              # 재료 crawling
         for ingre in temp:                                                                          #foodingredient 테이블 만들기.
             for row_data in result:
                 if( eq( row_data[1] , ingre ) ):                                                    # 크롤링한 재료와 ingredient에 있는 재료와 매칭이 된다면 추가.
@@ -137,6 +137,13 @@ def delete_inventory(userid,ingredientid):
     conn.commit()
     return True
 
+
+def delete_foodingredient(foodid,ingredientid):
+    SQL_useringredient = 'DELETE FROM foodingredient WHERE foodid = %s and ingredientid = %s'
+    curs.execute(SQL_useringredient, (foodid,ingredientid))
+    conn.commit()
+    return True
+
 def search(user):
 
     result = []
@@ -174,9 +181,12 @@ def search(user):
 
 
 if __name__ == '__main__':
+    #delete_foodingredient(4,11)
     #make_food_table()
+    #delete_foodingredient(4,11)
+    show_ingredientAll()
     #print(user_regist('98712','123123','asdf'))
     #print(get_userInfo(123))
     #print(get_foodInfo('오므라이스'))
     #show_menu()
-    show_ingredientAll()
+    #show_ingredientAll()
