@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg">
+
+    <GridLayout
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp"
+        android:columnCount="2"
+        android:rowCount="3">
+
+
+        <Button
+            android:id="@+id/btn_photo"
+            android:layout_width="150dp"
+            android:layout_height="100dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/card1"
+            android:gravity="center" />
+
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="100dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/card2"
+            android:gravity="center" />
+
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="100dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/card3"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/btn_ingredient"
+            android:layout_width="150dp"
+            android:layout_height="100dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/card4"
+            android:gravity="center" />
+
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="100dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/card5"
+            android:gravity="center" />
+
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="100dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/card6"
+            android:gravity="center" />
+
+
+    </GridLayout>
+
+</RelativeLayout>

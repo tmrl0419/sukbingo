@@ -1,0 +1,51 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/btncamera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClickTakeImage"
+            android:text="촬영"
+            android:layout_weight="1"
+            android:textSize="20dp" />
+
+        <Button
+            android:id="@+id/btnalbum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClickTakeImage"
+            android:text="앨범에서 고르기"
+            android:layout_weight="1"
+            android:textSize="20dp" />
+
+        <Button
+            android:id="@+id/btnswapcamera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onClickSwapCamera"
+            android:text="카메라전환"
+            android:textSize="20dp" />
+
+    </LinearLayout>
+    <FrameLayout
+        android:id="@+id/previewFrame"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <ImageView
+            android:id="@+id/cropimg"
+            android:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+</LinearLayout>
