@@ -80,7 +80,7 @@ def user_login(user,password):
         return -100
 
 def get_userInfo(userid):
-    SQL_user = 'SELECT * FROM user WHERE user = %s'
+    SQL_user = 'SELECT * FROM user WHERE id = %s'
     curs.execute(SQL_user, (userid))
     result = curs.fetchone()
     return result
@@ -122,7 +122,6 @@ def get_foodInfo(foodid):
 
 
 
-
 def insert_inventory( userid, ingredientid ):
     SQL_useringredient = 'INSERT INTO useringredient ( userid,ingredientid ) VALUES ( %s, %s )'
     curs.execute(SQL_useringredient, (userid, ingredientid) )
@@ -130,6 +129,23 @@ def insert_inventory( userid, ingredientid ):
     return True
 
 
+def insert_favorit( userid, foodname):
+    SQL_userfavorit = 'INSERT INTO userfavorit ( userid,foodid ) VALUES ( %s, %s )'
+    SQL_foodid = 'SELECT id FROM food WHERE name = %s'
+    curs.execute(SQL_foodid, (foodname) )
+    foodid = curs.fetchone()[0]
+    curs.execute(SQL_userfavorit, (userid, foodid) )
+    conn.commit()
+    return True
+'''
+def ingredientchk(key):
+    SQL_chk = 'SELECT * FROM ingredient WHERE id = %s'
+    curs.execute( SQL_chk, (key) )
+    result = curs.fetchall()
+    if(result == null ):
+        return False
+    return True
+'''
 
 def delete_inventory(userid,ingredientid):
     SQL_useringredient = 'DELETE FROM useringredient WHERE userid = %s and ingredientid = %s'
@@ -181,12 +197,5 @@ def search(user):
 
 
 if __name__ == '__main__':
-    #delete_foodingredient(4,11)
-    #make_food_table()
-    #delete_foodingredient(4,11)
-    show_ingredientAll()
-    #print(user_regist('98712','123123','asdf'))
-    #print(get_userInfo(123))
-    #print(get_foodInfo('오므라이스'))
-    #show_menu()
     #show_ingredientAll()
+    insert_favorit(1,'쫄면')

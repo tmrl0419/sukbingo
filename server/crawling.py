@@ -36,8 +36,8 @@ def spider_img(url):
 
 if __name__ == '__main__':
     #print("test!!")
-    #list = spider_ingredients('http://terms.naver.com/entry.nhn?docId=1989304&cid=42785&categoryId=44169')
-    #print(list)
+    list = spider_ingredients('http://terms.naver.com/entry.nhn?docId=1989304&cid=42785&categoryId=44169')
+    print(list)
     #spider_name('http://terms.naver.com/entry.nhn?docId=1989868&cid=42785&categoryId=44169')
-    str = spider_img('https://terms.naver.com/entry.nhn?docId=1989309&cid=48163&categoryId=48201')
-    print(str)
+    #str = spider_img('https://terms.naver.com/entry.nhn?docId=1989309&cid=48163&categoryId=48201')
+    #print(str)

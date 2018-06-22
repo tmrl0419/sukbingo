@@ -13,6 +13,10 @@ from flask import Flask,request, url_for, redirect
 import crawling
 import DBsetting
 import json
+import os
+import uuid
+import Detect_BD
+
 
 app = Flask(__name__)
 
@@ -26,10 +30,10 @@ def main():
 
 @app.route("/regist", methods = ['POST'])    # 회원가입.
 def regist():
-    print("asda")
     user = request.form['user']                     # 아이디 중복 체크 넣어야함
     password = request.form['password']
     name = request.form['name']
+    print(request.form)
     result = DBsetting.user_regist(user,password,name)
     jsonresult = {
         'result' : result
@@ -43,6 +47,7 @@ def regist():
 def login():
     user = request.form['user']
     password = request.form['password']
+    print(request.form)
     userid = DBsetting.user_login(user,password)
     jsonresult = {
         'id' : userid
@@ -52,11 +57,23 @@ def login():
     return jsonString
 
 
-@app.route("/add-ingredient", methods = ['PUT'])    # 재료 추가
+@app.route("/add-ingredient", methods = ['POST'])    # 재료 추가
 def add_ingredient():
     userid = request.form['user']
     ingredientid = request.form['ingredientid']
     result = DBsetting.insert_inventory(userid,ingredientid)
+    jsonresult = {
+        'result' : result
+    }
+    jsonstring = json.dumps(jsonresult)
+    return jsonstring
+
+
+@app.route("/add-favorit", methods = ['POST'])    # 검색
+def add_favorit():
+    userid = request.args.form['userid']
+    foodid = request.args.form['foodname']
+    result = DBsetting.insert_favorit(userid,foodname)
     jsonresult = {
         'result' : result
     }
@@ -98,7 +115,7 @@ def get_foodinfo():
     return jsonstring
 
 
-@app.route("/search", methods = ['GET'])    # 검색
+@app.route("/search", methods = ['GET'] )    # 검색
 def search():
     userid = request.args.get('user')
     result = DBsetting.search(userid)
@@ -108,7 +125,28 @@ def search():
     jsonstring = json.dumps(jsonresult)
     return jsonstring
 
+
+@app.route("/upload", methods = ['POST'])    # 검색
+def upload():
+    file = request.files['file']
+    extension = os.path.splitext(file.filename)
+    extension = str(extension[1:][0])
+    f_name = str(uuid.uuid4()) + extension
+    app.config['UPLOAD_FOLDER'] = 'Uploads'
+    image_path = os.path.join(app.config['UPLOAD_FOLDER'], f_name)
+    file.save(image_path)
+    result = Detect_BD.detect_labels(image_path)
+    os.remove(image_path)
+    #for key in result:
+    #    if (DBsetting.ingredientchk(key)):
+    #        target= key
+    #        break
+    print(result)
+
+    return "sex"
+
 if __name__ =="__main__":
+    #DBsetting.make_food_table()
     app.run(host='0.0.0.0',port = 8000,debug='True')
 
 #각 페이지마다 행동들 정해주기,
