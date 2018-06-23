@@ -34,6 +34,9 @@ public class FirstActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //카메라 페이지로 이동
                 Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                Intent externalIntent = getIntent();
+                int userid = externalIntent.getIntExtra("userid",-1);
+                intent.putExtra("userid",userid);
                 startActivity(intent);
             }
         });

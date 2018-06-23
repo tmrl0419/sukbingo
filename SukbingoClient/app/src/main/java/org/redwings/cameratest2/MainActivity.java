@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     final static private String URL = "http://172.21.57.27:8000/upload";
     private String mCurrentPhotoPath;   //사진파일 현재 경로
     public Context mContext;
-
+    public int CurrentID;
     String img_name ; //파일이 저장될 이름. 이름.png
     String cropImageDiretory;//크롭된 사진이 저장될 디렉토리
 
@@ -77,13 +77,12 @@ public class MainActivity extends AppCompatActivity {
         previewFrame.addView(cameraView);
     }
 
-    //앞뒤 카메라 전환 이벤트
+    //재촬영 이벤트
     public void onClickSwapCamera(View v){
         //현재 카메라 프리뷰 제거.
         previewFrame.removeView(cameraView);//여기서 surfaceDestroyed 실행됨
         //카메라 방향 토글
-        usingCamera = (usingCamera == Camera.CameraInfo.CAMERA_FACING_BACK?Camera.CameraInfo.CAMERA_FACING_FRONT:Camera.CameraInfo.CAMERA_FACING_BACK);
-        //카메라 세팅
+
         initCamera();
     }
 
@@ -96,7 +95,15 @@ public class MainActivity extends AppCompatActivity {
             case R.id.btnalbum:
                 goToAlbum();//앨범이면 앨범에서 사진 가져오기
                 break;
+
         }
+    }
+
+    public void onClickToIngridList(View v){
+        Intent toIngredientIntent = new Intent(MainActivity.this, IngredientActivity.class);
+        CurrentID = getIntent().getIntExtra("userid",-1);
+        toIngredientIntent.putExtra("userid",CurrentID);
+        startActivity(toIngredientIntent);
     }
 
     //현재 보여지는 미리보기 화면을 촬영
@@ -124,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                         photoUri = Uri.parse(outUriStr);//찍은 사진 경로를 photoUri에 저장
                         temp_origin_Uri = photoUri;
                         sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, photoUri));
-                        //////////////////post 들어갈 부분///////////////////
+
                     }
 
                     Toast.makeText(getApplicationContext(), "찍은 사진을 앨범에 저장했습니다.", Toast.LENGTH_LONG).show();
@@ -140,9 +147,11 @@ public class MainActivity extends AppCompatActivity {
                     //프레임 뷰에 보여지는 화면 바꾸기
                     imageView.setVisibility(View.VISIBLE);
                     cameraView.setVisibility(View.INVISIBLE);
-
+                    previewFrame.removeView(cameraView);
                     // 아래 부분 주석을 풀 경우 사진 촬영 후에도 다시 프리뷰를 돌릴수 있음
+                    //initCamera();
                     //camera.startPreview();
+                    //initCamera();
                 } catch (Exception e) {
                     Log.e("SampleCapture", "Failed to insert image.", e);
                 }
@@ -269,8 +278,9 @@ public class MainActivity extends AppCompatActivity {
          //   nameValuePairs.add(new BasicNameValuePair("image", getRealPathFromURI(photoUri) ));
             String filePath=PathUtil.getPath(MainActivity.this, photoUri);
             sendImage(filePath);
-         //   Intent intentFromMainBingo = getIntent();
-         //   int userid = intentFromMainBingo.getIntExtra("userid");
+
+            //File CropFile = new File(filePath);
+            //CropFile.delete();
 
             ///////////////
 
@@ -312,6 +322,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 Toast.makeText(mContext, resultCode + " 가 추가되었습니다.", Toast.LENGTH_SHORT).show();
+
                             }
                         });
                     }
