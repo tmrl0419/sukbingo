@@ -61,7 +61,7 @@ def login():
 @app.route("/add-ingredient", methods = ['POST'])    # 재료 추가
 def add_ingredient():
     print(request.form)
-    userid = request.form['user']
+    userid = request.form['userid']
     ingredient = request.form['ingredient']
     result = DBsetting.insert_inventory(userid,ingredient)
     jsonresult = {
@@ -83,7 +83,7 @@ def add_favorit():
     return jsonstring
 
 
-@app.route("/delete-ingredient", methods = ['DELETE'])    # 재료 삭제
+@app.route("/delete-ingredient", methods = ['POST'])    # 재료 삭제
 def delete_ingredient():
     userid = request.form['userid']
     ingredientid = request.form['ingredient']
@@ -105,9 +105,9 @@ def get_userinfo():
     jsonstring = json.dumps(jsonresult, ensure_ascii=False)
     return jsonstring
 
-@app.route("/get-useringredient", methods = ['GET'])
+@app.route("/get-useringredient", methods = ['POST'])
 def get_useringredient():
-    userid = request.args.get('userid')
+    userid = request.form['userid']
     result = DBsetting.get_useringredient(userid)
     jsonresult = {
         'result' : result
