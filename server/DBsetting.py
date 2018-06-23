@@ -137,15 +137,23 @@ def insert_favorit( userid, foodname):
     curs.execute(SQL_userfavorit, (userid, foodid) )
     conn.commit()
     return True
-'''
+
 def ingredientchk(key):
-    SQL_chk = 'SELECT * FROM ingredient WHERE id = %s'
+    SQL_chk = 'SELECT * FROM ingredient WHERE en_name = %s'
     curs.execute( SQL_chk, (key) )
-    result = curs.fetchall()
-    if(result == null ):
-        return False
-    return True
-'''
+    result = curs.fetchone()
+    if(result):
+        return True
+    return False
+
+def ingredient_translator(key):
+    SQL_translator = 'SELECT * FROM ingredient WHERE en_name = %s'
+    curs.execute( SQL_translator, (key) )
+    result = curs.fetchone()
+    print(result)
+    print(result[1])
+    return result[1]
+
 
 def delete_inventory(userid,ingredientid):
     SQL_useringredient = 'DELETE FROM useringredient WHERE userid = %s and ingredientid = %s'
@@ -198,4 +206,4 @@ def search(user):
 
 if __name__ == '__main__':
     #show_ingredientAll()
-    insert_favorit(1,'쫄면')
+    print(ingredientchk('carrotsss'))

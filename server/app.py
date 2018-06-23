@@ -129,6 +129,7 @@ def search():
 @app.route("/upload", methods = ['POST'])    # 검색
 def upload():
     file = request.files['file']
+    userid = request.form['userid']
     extension = os.path.splitext(file.filename)
     extension = str(extension[1:][0])
     f_name = str(uuid.uuid4()) + extension
@@ -137,13 +138,17 @@ def upload():
     file.save(image_path)
     result = Detect_BD.detect_labels(image_path)
     os.remove(image_path)
-    #for key in result:
-    #    if (DBsetting.ingredientchk(key)):
-    #        target= key
-    #        break
     print(result)
-
-    return "sex"
+    for key in result:
+        if (DBsetting.ingredientchk(key)):
+            target = DBsetting.ingredient_translator(key)
+            break
+    print(target)
+    jsonresult = {
+        'result' : target
+    }
+    jsonstring = json.dumps(jsonresult)
+    return jsonstring
 
 if __name__ =="__main__":
     #DBsetting.make_food_table()
