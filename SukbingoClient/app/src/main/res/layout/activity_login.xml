@@ -48,33 +48,35 @@
             android:orientation="vertical">
 
             <EditText
+                android:id="@+id/idText"
                 android:layout_width="280dp"
                 android:layout_height="wrap_content"
-                android:hint="아이디"
                 android:layout_gravity="center"
-                android:padding="10dp"
-                android:textColor="#ffffff"
-                android:textColorHint="#ffffff"
-                android:id="@+id/idText"
-                android:drawableStart="@drawable/ic_person_black_24dp"
-                android:drawableLeft="@drawable/ic_person_black_24dp"
                 android:layout_marginTop="50dp"
-                android:background="@color/colorPrimary"/>
+                android:background="@color/colorPrimary"
+                android:drawableLeft="@drawable/ic_person_black_24dp"
+                android:drawableStart="@drawable/ic_person_black_24dp"
+                android:hint="아이디"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:textColor="#ffffff"
+                android:textColorHint="#ffffff" />
 
             <EditText
-                android:inputType="textPassword"
+                android:id="@+id/passwordText"
                 android:layout_width="280dp"
                 android:layout_height="wrap_content"
-                android:hint="비밀번호"
                 android:layout_gravity="center"
-                android:padding="10dp"
-                android:textColor="#ffffff"
-                android:textColorHint="#ffffff"
-                android:id="@+id/passwordText"
-                android:drawableStart="@drawable/ic_lock_black_24dp"
-                android:drawableLeft="@drawable/ic_lock_black_24dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/colorPrimary"/>
+                android:background="@color/colorPrimary"
+                android:drawableLeft="@drawable/ic_lock_black_24dp"
+                android:drawableStart="@drawable/ic_lock_black_24dp"
+                android:hint="비밀번호"
+                android:inputType="textPassword"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:textColor="#ffffff"
+                android:textColorHint="#ffffff" />
 
             <Button
                 android:layout_width="280dp"

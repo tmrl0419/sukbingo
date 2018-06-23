@@ -1,3 +1,4 @@
+#-*- coding: utf-8 -*-
 #-------------------------------------------------------------------------------
 # Name:        module1
 # Purpose:
@@ -22,7 +23,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    return "hello World!"
+    return "안녕 세계!"
 
 @app.route("/main")
 def main():
@@ -59,9 +60,10 @@ def login():
 
 @app.route("/add-ingredient", methods = ['POST'])    # 재료 추가
 def add_ingredient():
-    userid = request.form['user']
-    ingredientid = request.form['ingredientid']
-    result = DBsetting.insert_inventory(userid,ingredientid)
+    print(request.form)
+    userid = request.form['userid']
+    ingredient = request.form['ingredient']
+    result = DBsetting.insert_inventory(userid,ingredient)
     jsonresult = {
         'result' : result
     }
@@ -81,10 +83,10 @@ def add_favorit():
     return jsonstring
 
 
-@app.route("/delete-ingredient", methods = ['DELETE'])    # 재료 삭제
+@app.route("/delete-ingredient", methods = ['POST'])    # 재료 삭제
 def delete_ingredient():
-    userid = request.form['user']
-    ingredientid = request.form['ingredientid']
+    userid = request.form['userid']
+    ingredientid = request.form['ingredient']
     result = DBsetting.delete_inventory(userid,ingredientid)
     jsonresult = {
         'result' : result
@@ -95,13 +97,24 @@ def delete_ingredient():
 
 @app.route("/get-userinfo", methods = ['POST'])
 def get_userinfo():
-    user = request.form['user']
-    result = DBsetting.get_userInfo(user)
+    userid = request.form['userid']
+    result = DBsetting.get_userInfo(userid)
     jsonresult = {
         'result' : result
     }
-    jsonstring = json.dumps(jsonresult)
+    jsonstring = json.dumps(jsonresult, ensure_ascii=False)
     return jsonstring
+
+@app.route("/get-useringredient", methods = ['POST'])
+def get_useringredient():
+    userid = request.form['userid']
+    result = DBsetting.get_useringredient(userid)
+    jsonresult = {
+        'result' : result
+    }
+    jsonstring = json.dumps(jsonresult, ensure_ascii=False)
+    return jsonstring
+
 
 
 @app.route("/get-foodinfo", methods = ['POST'])
@@ -111,39 +124,49 @@ def get_foodinfo():
     jsonresult = {
         'result' : result
     }
-    jsonstring = json.dumps(jsonresult)
+    jsonstring = json.dumps(jsonresult, ensure_ascii=False)
     return jsonstring
 
 
 @app.route("/search", methods = ['GET'] )    # 검색
 def search():
-    userid = request.args.get('user')
+    userid = request.args.get('userid')
     result = DBsetting.search(userid)
+    print(result)
     jsonresult = {
         'result' : result
     }
-    jsonstring = json.dumps(jsonresult)
+    jsonstring = json.dumps(jsonresult, ensure_ascii=False)
     return jsonstring
 
 
 @app.route("/upload", methods = ['POST'])    # 검색
 def upload():
-    file = request.files['file']
+    file = request.files['IMAGE']
+    userid = request.form['userid']
     extension = os.path.splitext(file.filename)
     extension = str(extension[1:][0])
     f_name = str(uuid.uuid4()) + extension
     app.config['UPLOAD_FOLDER'] = 'Uploads'
     image_path = os.path.join(app.config['UPLOAD_FOLDER'], f_name)
     file.save(image_path)
-    result = Detect_BD.detect_labels(image_path)
+    data_set = Detect_BD.detect_labels(image_path)
     os.remove(image_path)
-    #for key in result:
-    #    if (DBsetting.ingredientchk(key)):
-    #        target= key
-    #        break
-    print(result)
+    print(data_set)
+    result = False
+    for key in data_set:
+        chk = DBsetting.ingredientchk(key)
+        if (chk[0] =="1"):
+            result = chk[1]
+            DBsetting.insert_inventory(userid,result)
+            break
 
-    return "sex"
+    jsonresult = {
+        'result' : result
+    }
+    jsonstring = json.dumps(jsonresult, ensure_ascii=False)
+    return jsonstring
+
 
 if __name__ =="__main__":
     #DBsetting.make_food_table()

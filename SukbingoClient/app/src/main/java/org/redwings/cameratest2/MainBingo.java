@@ -29,6 +29,9 @@ public class MainBingo extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 Intent ingredientintent = new Intent(MainBingo.this, IngredientActivity.class );
+                Intent externalIntent = getIntent();
+                int userid = externalIntent.getIntExtra("userid",-1);
+                ingredientintent.putExtra("userid",userid);
                 MainBingo.this.startActivity(ingredientintent);
             }
         });

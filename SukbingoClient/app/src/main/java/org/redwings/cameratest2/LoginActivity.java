@@ -60,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
                                         .create();
                                 dialog.show();
                                 Intent intent = new Intent(LoginActivity.this, MainBingo.class);
+                                intent.putExtra("userid",success);
                                 LoginActivity.this.startActivity(intent);
                                 finish();
                             } else {
