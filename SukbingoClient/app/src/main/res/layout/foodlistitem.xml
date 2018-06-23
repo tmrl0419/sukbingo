@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/FoodListItemNumber"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:focusable="false"/>
+    <ImageView
+        android:id="@+id/FoodListItemImageView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:srcCompat="@drawable/card3"
+        android:focusable="false"/>
+    <TextView
+        android:id="@+id/FoodListItemName"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:focusable="false"/>
+    <Button
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        android:id="@+id/FoodListItemButton1"
+        android:text="요리법"
+        android:layout_margin="20dp"
+        android:focusable="false"/>
+    <Button
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        android:id="@+id/FoodListItemButton2"
+        android:text="유튜브"
+        android:layout_margin="20dp"
+        android:focusable="false"/>
+
+
+
+</LinearLayout>

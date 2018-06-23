@@ -86,20 +86,22 @@ public class IngredientActivity extends AppCompatActivity {
         final EditText IngredientText = (EditText) findViewById(R.id.IngredientText);
         final Button InputButton = (Button) findViewById(R.id.InputButton);
         final ListView listView = (ListView) findViewById(R.id.courseListview);
-        final Button testasefagargargButton = (Button) findViewById(R.id.testasefagargarg);
-        testasefagargargButton.setOnClickListener(new View.OnClickListener() {
+        final Button FoodButton = (Button) findViewById(R.id.searchButton) ;
+
+        userid = ingredientIntent.getIntExtra("userid",-1);
+        RefreshArrayList();
+
+        FoodButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RefreshArrayList();
+                Intent foodIntent = new Intent(IngredientActivity.this, FoodActivity.class);
+                Intent externalIntent = getIntent();
+                int userid = externalIntent.getIntExtra("userid",-1);
+                foodIntent.putExtra("userid",userid);
+                IngredientActivity.this.startActivity(foodIntent);
             }
         });
-        userid = ingredientIntent.getIntExtra("userid",-1);
-        ingredientListItemArrayList = new ArrayList<>();
-        ingredientListItemArrayList.add(new IngredientListItem(1, "대뱃살"));
-        ingredientListItemArrayList.add(new IngredientListItem(2,"닭고기"));
-        ingredientListItemArrayList.add(new IngredientListItem(3,"소고기"));
-        ingredientListItemAdapter=new IngredientListItemAdapter(this,R.layout.ingredientlistitem,ingredientListItemArrayList, userid);
-        listView.setAdapter(ingredientListItemAdapter);
+
 
         InputButton.setOnClickListener(new View.OnClickListener() {
             @Override
