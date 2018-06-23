@@ -24,6 +24,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -34,12 +36,16 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int PICK_FROM_ALBUM = 1; //앨범에서 사진 가져오기
     private static final int CROP_FROM_IMAGE = 2; //가져온 사진을 자르기 위한 변수
+    final static private String URL = "http://172.21.57.27:8000/upload";
     private String mCurrentPhotoPath;   //사진파일 현재 경로
+    public Context mContext;
 
     String img_name ; //파일이 저장될 이름. 이름.png
     String cropImageDiretory;//크롭된 사진이 저장될 디렉토리
 
     private Uri photoUri;//촬영한, 크롭된 이미지 경로를 담는 변수
+    private Uri temp_origin_Uri;
+    private Uri croped_Uri;
     ImageView imageView;
     CameraSurfaceView cameraView;
     FrameLayout previewFrame;
@@ -50,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mContext = MainActivity.this;
 
         init();
     }
@@ -115,7 +122,9 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     } else {
                         photoUri = Uri.parse(outUriStr);//찍은 사진 경로를 photoUri에 저장
+                        temp_origin_Uri = photoUri;
                         sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, photoUri));
+                        //////////////////post 들어갈 부분///////////////////
                     }
 
                     Toast.makeText(getApplicationContext(), "찍은 사진을 앨범에 저장했습니다.", Toast.LENGTH_LONG).show();
@@ -228,6 +237,7 @@ public class MainActivity extends AppCompatActivity {
                         Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
             }
             i.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+
             startActivityForResult(i, CROP_FROM_IMAGE);
         }
     }
@@ -247,14 +257,74 @@ public class MainActivity extends AppCompatActivity {
             photoUri = data.getData();
             cropImage();
         } else if (requestCode == CROP_FROM_IMAGE) {//크롭
-            imageView.setImageURI(null);//초기화? 필요한 이유를 모르겠다
+            imageView.setImageURI(null);//초기화
             imageView.setImageURI(photoUri);//이 photoUri가 크롭된 이미지 파일의 경로
 
             imageView.setVisibility(View.VISIBLE);
             cameraView.setVisibility(View.INVISIBLE);
+
+            Toast.makeText(this, "사진을 인식합니다.", Toast.LENGTH_SHORT).show();
+            ////////////////POST 넣는 부분/////////////////////
+         //   List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+         //   nameValuePairs.add(new BasicNameValuePair("image", getRealPathFromURI(photoUri) ));
+            String filePath=PathUtil.getPath(MainActivity.this, photoUri);
+            sendImage(filePath);
+         //   Intent intentFromMainBingo = getIntent();
+         //   int userid = intentFromMainBingo.getIntExtra("userid");
+
+            ///////////////
+
         }
     }
 
+    /// HTTP POST 통신 ////
+
+    private void sendImage(final String imagePath) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String charset = "UTF-8";
+                    String requestURL = URL ;
+
+
+                    MultipartUtility multipartUtility = new MultipartUtility(requestURL, charset);
+             //       multipartUtility.addFormField("TBLSEQ", globalApplication.getTBLSEQ());
+             //       multipartUtility.addFormField("MSG_TO", globalApplication.getSTOSEQ());
+                    multipartUtility.addFormField("userid", String.valueOf(getIntent().getIntExtra("userid",-1)));
+                    multipartUtility.addFilePart("IMAGE", new File(imagePath));
+                    String response = multipartUtility.finish();
+
+
+                    final JSONObject jsonResult = new JSONObject(response);
+                    final String resultCode = jsonResult.getString("result");
+
+                    if(resultCode == "false") {
+                        MainActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(mContext, "모르는 재료입니다.", Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+                    } else {
+                        MainActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(mContext, resultCode + " 가 추가되었습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+
+                    //
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+    }
     /**
      * 카메라 미리보기를 위한 서피스뷰 정의
      */
