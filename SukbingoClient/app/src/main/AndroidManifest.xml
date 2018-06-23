@@ -30,6 +30,7 @@
         <activity android:name=".MainBingo"/>
         <activity android:name=".IngredientActivity"></activity>
         <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".FragActivity"></activity>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
