@@ -5,17 +5,16 @@ import com.android.volley.Response;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddRequest extends StringRequest {
+public class FoodInfoRequest extends StringRequest {
 
-    final static private String URL="http://172.21.57.27:8000/add-ingredient";
+    final static private String URL="http://172.21.57.27:8000/get-foodinfo";
     private Map<String, String> parameters;
 
 
-    AddRequest(String ingredient, String user, Response.Listener<String> listener){
+    FoodInfoRequest(String foodName, Response.Listener<String> listener){
         super(Method.POST, URL, listener, null);
         parameters = new HashMap<>();
-        parameters.put("ingredient", ingredient);
-        parameters.put("userid", user);
+        parameters.put("food", foodName);
     }
 
     @Override

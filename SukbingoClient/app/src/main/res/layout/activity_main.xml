@@ -19,9 +19,9 @@
             android:id="@+id/btnalbum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="onClickTakeImage"
-            android:text="앨범에서 고르기"
             android:layout_weight="1"
+            android:onClick="onClickTakeImage"
+            android:text="앨범 선택"
             android:textSize="20dp" />
 
         <Button
@@ -30,7 +30,16 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="onClickSwapCamera"
-            android:text="카메라전환"
+            android:text="재촬영"
+            android:textSize="20dp" />
+
+        <Button
+            android:id="@+id/btnswapingrid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onClickToIngridList"
+            android:text="재료목록"
             android:textSize="20dp" />
 
     </LinearLayout>
