@@ -28,7 +28,9 @@ def no_continuous(s):                           #리스트 반복 제거        
 
 def make_food_table():                                          # food table 만들기                                    # crawling 으로 디비에 자료 넣는 함수.
     curs.execute('DELETE FROM food')                                                                 # 자료넣기전에 이전 값 초기화.
+    conn.commit()
     curs.execute('DELETE FROM foodingredient')
+    conn.commit()
     f = open('url.txt','r')                                                                         # url.txt에서 url값들을 불러옴.
     list = []
     name = []
@@ -227,17 +229,21 @@ def get_useringredient(userid):
 
 
 if __name__ == '__main__':
+    #make_food_table()
     #show_ingredientAll()
     #print(ingredientchk('carrotsss'))
     #print(get_userInfo("1"))
     #print(insert_inventory("1","감자"))
     #print(insert_favorit("1","오므라이스"))
-    #print(delete_inventory("23","당근"))
-   # print(search("1"))
+    #print(delete_inventory("1","양파"))
+    #print(search("1"))
     #print(name_to_id_food("오므라이스"))
     #print(name_to_id_ingredient("감자"))
-    print(get_useringredient(1))
-
+    #print(get_useringredient(1))
+    #delete_inventory("-1","양파")
+    make_food_table()
+    delete_foodingredient("4","11")
+    #print(get_foodInfo("오므라이스"))
 
 
 

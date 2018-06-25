@@ -128,9 +128,9 @@ def get_foodinfo():
     return jsonstring
 
 
-@app.route("/search", methods = ['GET'] )    # 검색
+@app.route("/search", methods = ['POST'] )    # 검색
 def search():
-    userid = request.args.get('userid')
+    userid = request.form['userid']
     result = DBsetting.search(userid)
     print(result)
     jsonresult = {
